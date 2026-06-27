@@ -10,59 +10,60 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ── Catalog ──────────────────────────────────────────────────
 
 model Category {
-  id          String     @id @default(cuid())
-  name        String
-  slug        String     @unique
-  description String?
-  image       String?
+  id             String     @id @default(cuid())
+  name           String
+  slug           String     @unique
+  description    String?
+  image          String?
   // Self-relation so new categories/subcategories can be added freely
-  parentId    String?
-  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id])
-  children    Category[] @relation("CategoryTree")
+  parentId       String?
+  parent         Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children       Category[] @relation("CategoryTree")
   // SEO
   seoTitle       String?
   seoDescription String?
-  sortOrder   Int        @default(0)
-  isActive    Boolean    @default(true)
-  products    Product[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  sortOrder      Int        @default(0)
+  isActive       Boolean    @default(true)
+  products       Product[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
   @@index([slug])
   @@index([parentId])
 }
 
 model Collection {
-  id          String    @id @default(cuid())
-  name        String
-  slug        String    @unique
-  description String?
-  image       String?
+  id             String    @id @default(cuid())
+  name           String
+  slug           String    @unique
+  description    String?
+  image          String?
   seoTitle       String?
   seoDescription String?
-  isFeatured  Boolean   @default(false)
-  isActive    Boolean   @default(true)
-  sortOrder   Int       @default(0)
-  products    Product[] @relation("ProductCollections")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isFeatured     Boolean   @default(false)
+  isActive       Boolean   @default(true)
+  sortOrder      Int       @default(0)
+  products       Product[] @relation("ProductCollections")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([slug])
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  sku         String   @unique
-  description String   @db.Text
+  id            String  @id @default(cuid())
+  name          String
+  slug          String  @unique
+  sku           String  @unique
+  description   String  @db.Text
   // Handmade storytelling
   handmadeStory String? @db.Text
   materials     String?
@@ -71,15 +72,15 @@ model Product {
   shippingInfo  String? @db.Text
 
   // Pricing in paise (INR) to avoid float errors
-  price       Int
-  salePrice   Int?
-  currency    String   @default("INR")
+  price     Int
+  salePrice Int?
+  currency  String @default("INR")
 
   // Merch flags — drive badges + sections dynamically
-  isFeatured     Boolean @default(false)
-  isBestseller   Boolean @default(false)
-  isNewArrival   Boolean @default(false)
-  isActive       Boolean @default(true)
+  isFeatured   Boolean @default(false)
+  isBestseller Boolean @default(false)
+  isNewArrival Boolean @default(false)
+  isActive     Boolean @default(true)
 
   // Inventory
   inventory      Int     @default(0)
@@ -88,32 +89,32 @@ model Product {
 
   // Relations
   categoryId  String
-  category    Category     @relation(fields: [categoryId], references: [id])
-  collections Collection[] @relation("ProductCollections")
+  category    Category         @relation(fields: [categoryId], references: [id])
+  collections Collection[]     @relation("ProductCollections")
   images      ProductImage[]
   videos      ProductVideo[]
   variants    ProductVariant[]
   reviews     Review[]
-  tags        Tag[]        @relation("ProductTags")
+  tags        Tag[]            @relation("ProductTags")
 
   // Self-relation for "Related products"
-  relatedTo   Product[]    @relation("RelatedProducts")
-  relatedFrom Product[]    @relation("RelatedProducts")
+  relatedTo   Product[] @relation("RelatedProducts")
+  relatedFrom Product[] @relation("RelatedProducts")
 
   // Aggregates (denormalized for fast sort/filter)
-  ratingAvg   Float    @default(0)
-  ratingCount Int      @default(0)
-  soldCount   Int      @default(0)
+  ratingAvg   Float @default(0)
+  ratingCount Int   @default(0)
+  soldCount   Int   @default(0)
 
   // SEO
   seoTitle       String?
   seoDescription String?
 
-  orderItems  OrderItem[]
+  orderItems    OrderItem[]
   wishlistItems WishlistItem[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([slug])
   @@index([categoryId])
@@ -146,14 +147,14 @@ model ProductVideo {
 }
 
 model ProductVariant {
-  id        String  @id @default(cuid())
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name      String  // e.g. "Color", "Length"
-  value     String  // e.g. "Lilac", "18 inch"
-  priceDelta Int    @default(0)
-  inventory Int     @default(0)
-  sku       String? @unique
+  id         String  @id @default(cuid())
+  productId  String
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String // e.g. "Color", "Length"
+  value      String // e.g. "Lilac", "18 inch"
+  priceDelta Int     @default(0)
+  inventory  Int     @default(0)
+  sku        String? @unique
 
   @@index([productId])
 }
@@ -173,18 +174,18 @@ enum Role {
 }
 
 model Customer {
-  id         String     @id @default(cuid())
-  email      String     @unique
-  name       String?
-  phone      String?
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String?
+  phone        String?
   passwordHash String?
-  role       Role       @default(CUSTOMER)
-  addresses  Address[]
-  orders     Order[]
-  reviews    Review[]
-  wishlists  Wishlist[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  role         Role       @default(CUSTOMER)
+  addresses    Address[]
+  orders       Order[]
+  reviews      Review[]
+  wishlists    Wishlist[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
   @@index([email])
 }
@@ -227,10 +228,10 @@ enum PaymentStatus {
 }
 
 model Order {
-  id          String        @id @default(cuid())
-  orderNumber String        @unique
+  id          String    @id @default(cuid())
+  orderNumber String    @unique
   customerId  String?
-  customer    Customer?     @relation(fields: [customerId], references: [id])
+  customer    Customer? @relation(fields: [customerId], references: [id])
   // Guest checkout support
   guestEmail  String?
   guestPhone  String?
@@ -238,16 +239,16 @@ model Order {
   status        OrderStatus   @default(PENDING)
   paymentStatus PaymentStatus @default(PENDING)
 
-  items       OrderItem[]
+  items OrderItem[]
 
   // Amounts in paise (INR)
-  subtotal    Int
-  discount    Int           @default(0)
-  shipping    Int           @default(0)
-  total       Int
+  subtotal Int
+  discount Int @default(0)
+  shipping Int @default(0)
+  total    Int
 
-  couponId    String?
-  coupon      Coupon?       @relation(fields: [couponId], references: [id])
+  couponId String?
+  coupon   Coupon? @relation(fields: [couponId], references: [id])
 
   // Razorpay
   razorpayOrderId   String?
@@ -257,8 +258,8 @@ model Order {
   shippingAddress Json?
   notes           String?
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([customerId])
   @@index([status])
@@ -283,19 +284,19 @@ model OrderItem {
 // ── Reviews ──────────────────────────────────────────────────
 
 model Review {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   productId  String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   customerId String?
   customer   Customer? @relation(fields: [customerId], references: [id])
   authorName String
-  rating     Int      // 1..5
+  rating     Int // 1..5
   title      String?
-  body       String?  @db.Text
+  body       String?   @db.Text
   images     String[] // UGC photos
-  isVerified Boolean  @default(false)
-  isApproved Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  isVerified Boolean   @default(false)
+  isApproved Boolean   @default(false)
+  createdAt  DateTime  @default(now())
 
   @@index([productId])
 }
@@ -338,7 +339,7 @@ model Coupon {
   id          String       @id @default(cuid())
   code        String       @unique
   type        DiscountType
-  value       Int          // percent (0-100) or paise
+  value       Int // percent (0-100) or paise
   minSubtotal Int          @default(0)
   maxUses     Int?
   usedCount   Int          @default(0)
@@ -356,7 +357,7 @@ model Coupon {
 model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
-  source    String?  // popup, footer, checkout
+  source    String? // popup, footer, checkout
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
@@ -364,20 +365,20 @@ model NewsletterSubscriber {
 // ── Blog ─────────────────────────────────────────────────────
 
 model BlogPost {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  excerpt     String?
-  body        String   @db.Text
-  coverImage  String?
-  author      String   @default("AKITAURAA")
-  tags        String[]
-  isPublished Boolean  @default(false)
-  publishedAt DateTime?
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String?
+  body           String    @db.Text
+  coverImage     String?
+  author         String    @default("AKITAURAA")
+  tags           String[]
+  isPublished    Boolean   @default(false)
+  publishedAt    DateTime?
   seoTitle       String?
   seoDescription String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([slug])
 }
