@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────────────────────
+   AKITAURAA DESIGN SYSTEM
+   Soft Lavender · Kawaii · Y2K · Dreamy · Gen-Z
+   Tailwind v4 CSS-first config (@theme)
+   ──────────────────────────────────────────────────────────── */
+
+@theme {
+  /* ── Brand palette (lavender) ───────────────────────────── */
+  --color-lav-50: #faf8ff;
+  --color-lav-100: #f7f2ff;
+  --color-lav-150: #f2ecf7;
+  --color-lav-200: #e9d6f6;
+  --color-lav-300: #dccef2;
+  --color-lav-400: #c8b4df;
+  --color-lav-500: #b9a5d6;
+  --color-lav-600: #8f79b8;
+  --color-lav-700: #6f5a98;
+  --color-lav-800: #524178;
+  --color-lav-900: #382b54;
+
+  /* ── Accents (kawaii pops) ──────────────────────────────── */
+  --color-blush: #ffd6e8;
+  --color-blush-deep: #ff9ec4;
+  --color-mint: #cdeede;
+  --color-butter: #fff1c2;
+  --color-sky: #cfe6ff;
+
+  /* ── Semantic ───────────────────────────────────────────── */
+  --color-background: #faf8ff;
+  --color-surface: #ffffff;
+  --color-foreground: #382b54;
+  --color-muted: #8a7fa6;
+  --color-primary: #8f79b8;
+  --color-primary-foreground: #ffffff;
+  --color-ring: #b9a5d6;
+  --color-border: #e9d6f6;
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-display: var(--font-fredoka), "Comic Sans MS", system-ui, sans-serif;
+  --font-body: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Radii (soft, pill-forward) ─────────────────────────── */
+  --radius-sm: 0.625rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-2xl: 2.5rem;
+  --radius-blob: 42% 58% 63% 37% / 41% 44% 56% 59%;
+
+  /* ── Shadows (soft, dreamy) ─────────────────────────────── */
+  --shadow-soft: 0 8px 30px -8px rgba(143, 121, 184, 0.25);
+  --shadow-glow:
+    0 0 0 1px rgba(220, 206, 242, 0.6),
+    0 12px 40px -12px rgba(143, 121, 184, 0.35);
+  --shadow-float: 0 18px 50px -16px rgba(143, 121, 184, 0.4);
+
+  /* ── Motion ─────────────────────────────────────────────── */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ── Custom animations ──────────────────────────────────── */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-wiggle: wiggle 3s ease-in-out infinite;
+  --animate-twinkle: twinkle 2.4s ease-in-out infinite;
+  --animate-marquee: marquee 28s linear infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(3deg);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  /* body {
+    
+    background:
+      radial-gradient(1200px 600px at 80% -10%, var(--color-lav-200), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, var(--color-blush), transparent 55%),
+      var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  } */
+
+  body {
+    background:
+      radial-gradient(circle at top right, #d9c3ff 0%, transparent 30%),
+      radial-gradient(circle at top left, #ffe3f5 0%, transparent 25%),
+      linear-gradient(180deg, #fcfaff 0%, #f7f0ff 50%, #f1e6ff 100%);
+
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid #eadcff;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: var(--color-lav-300);
+    color: var(--color-lav-900);
+  }
+}
+
+/* ── Reusable utilities ────────────────────────────────────── */
+@utility text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--color-lav-600),
+    var(--color-blush-deep) 60%,
+    var(--color-lav-500)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* Respect reduced-motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
