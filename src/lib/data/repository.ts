@@ -107,12 +107,30 @@ async function loadProducts(): Promise<Product[]> {
 }
 
 async function loadCategories(): Promise<Category[]> {
-  if (!DB_CONFIGURED) return sampleCategories;
+  if (categoriesCache) {
+    return categoriesCache;
+  }
+
+  if (!DB_CONFIGURED) {
+    categoriesCache = sampleCategories;
+    return categoriesCache;
+  }
+
   try {
     const { prisma } = await import("@/lib/prisma");
-    const rows = await prisma.category.findMany({ where: { isActive: true } });
-    if (rows.length === 0) return sampleCategories;
-    return rows.map((c) => ({
+
+    const rows = await prisma.category.findMany({
+      where: {
+        isActive: true,
+      },
+    });
+
+    if (rows.length === 0) {
+      categoriesCache = sampleCategories;
+      return categoriesCache;
+    }
+
+    categoriesCache = rows.map((c) => ({
       id: c.id,
       name: c.name,
       slug: c.slug,
@@ -123,15 +141,42 @@ async function loadCategories(): Promise<Category[]> {
       seoDescription: c.seoDescription ?? undefined,
       sortOrder: c.sortOrder,
     }));
+
+    return categoriesCache;
   } catch (e) {
-    // } catch (e) {
-    //   console.error("[repository] category load failed, using sample data:", e);
-    //   return sampleCategories;
-    // }
     console.error(e);
-    throw e;
+
+    categoriesCache = sampleCategories;
+
+    return categoriesCache;
   }
 }
+// async function loadCategories(): Promise<Category[]> {
+//   if (!DB_CONFIGURED) return sampleCategories;
+//   try {
+//     const { prisma } = await import("@/lib/prisma");
+//     const rows = await prisma.category.findMany({ where: { isActive: true } });
+//     if (rows.length === 0) return sampleCategories;
+//     return rows.map((c) => ({
+//       id: c.id,
+//       name: c.name,
+//       slug: c.slug,
+//       description: c.description ?? undefined,
+//       image: c.image ?? undefined,
+//       emoji: EMOJI_BY_SLUG.get(c.slug) ?? "✦",
+//       seoTitle: c.seoTitle ?? undefined,
+//       seoDescription: c.seoDescription ?? undefined,
+//       sortOrder: c.sortOrder,
+//     }));
+//   } catch (e) {
+//     // } catch (e) {
+//     //   console.error("[repository] category load failed, using sample data:", e);
+//     //   return sampleCategories;
+//     // }
+//     console.error(e);
+//     throw e;
+//   }
+// }
 
 // ── Helpers ──────────────────────────────────────────────────
 function effectivePrice(p: Product) {
