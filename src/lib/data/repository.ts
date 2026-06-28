@@ -95,11 +95,15 @@ async function loadProducts(): Promise<Product[]> {
     }));
     return productsCache;
   } catch (e) {
-    console.error("[repository] product load failed, using sample data:", e);
-    // return sampleProducts;
-    productsCache = sampleProducts;
-    return productsCache;
+    console.error(e);
+    throw e;
   }
+  // } catch (e) {
+  //   console.error("[repository] product load failed, using sample data:", e);
+  //   // return sampleProducts;
+  //   productsCache = sampleProducts;
+  //   return productsCache;
+  // }
 }
 
 async function loadCategories(): Promise<Category[]> {
@@ -120,8 +124,12 @@ async function loadCategories(): Promise<Category[]> {
       sortOrder: c.sortOrder,
     }));
   } catch (e) {
-    console.error("[repository] category load failed, using sample data:", e);
-    return sampleCategories;
+    // } catch (e) {
+    //   console.error("[repository] category load failed, using sample data:", e);
+    //   return sampleCategories;
+    // }
+    console.error(e);
+    throw e;
   }
 }
 
