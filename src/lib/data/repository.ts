@@ -29,8 +29,19 @@ const DB_CONFIGURED = Boolean(process.env.DATABASE_URL);
 const EMOJI_BY_SLUG = new Map(sampleCategories.map((c) => [c.slug, c.emoji]));
 
 // ── Provider ─────────────────────────────────────────────────
+let productsCache: Product[] | null = null;
+let categoriesCache: Category[] | null = null;
+
 async function loadProducts(): Promise<Product[]> {
-  if (!DB_CONFIGURED) return sampleProducts;
+  if (productsCache) {
+    return productsCache;
+  }
+
+  if (!DB_CONFIGURED) {
+    productsCache = sampleProducts;
+    return productsCache;
+  }
+  // if (!DB_CONFIGURED) return sampleProducts;
   try {
     const { prisma } = await import("@/lib/prisma");
     const rows = await prisma.product.findMany({
@@ -43,8 +54,12 @@ async function loadProducts(): Promise<Product[]> {
         tags: true,
       },
     });
-    if (rows.length === 0) return sampleProducts; // empty DB → keep the demo alive
-    return rows.map((p) => ({
+    // if (rows.length === 0) return sampleProducts; // empty DB → keep the demo alive
+    if (rows.length === 0) {
+      productsCache = sampleProducts;
+      return productsCache;
+    }
+    productsCache = rows.map((p) => ({
       id: p.id,
       name: p.name,
       slug: p.slug,
@@ -62,7 +77,10 @@ async function loadProducts(): Promise<Product[]> {
       collectionSlugs: p.collections.map((c) => c.slug),
       tags: p.tags.map((t) => t.name),
       images: p.images.map((i) => ({ url: i.url, alt: i.alt ?? undefined })),
-      videos: p.videos.map((v) => ({ url: v.url, poster: v.poster ?? undefined })),
+      videos: p.videos.map((v) => ({
+        url: v.url,
+        poster: v.poster ?? undefined,
+      })),
       isFeatured: p.isFeatured,
       isBestseller: p.isBestseller,
       isNewArrival: p.isNewArrival,
@@ -75,9 +93,12 @@ async function loadProducts(): Promise<Product[]> {
       seoDescription: p.seoDescription ?? undefined,
       createdAt: p.createdAt.toISOString(),
     }));
+    return productsCache;
   } catch (e) {
     console.error("[repository] product load failed, using sample data:", e);
-    return sampleProducts;
+    // return sampleProducts;
+    productsCache = sampleProducts;
+    return productsCache;
   }
 }
 
@@ -113,7 +134,9 @@ function sortProducts(items: Product[], sort: SortKey = "featured"): Product[] {
   const copy = [...items];
   switch (sort) {
     case "newest":
-      return copy.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
+      return copy.sort(
+        (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt),
+      );
     case "bestselling":
       return copy.sort((a, b) => (b.soldCount ?? 0) - (a.soldCount ?? 0));
     case "price-asc":
@@ -125,14 +148,15 @@ function sortProducts(items: Product[], sort: SortKey = "featured"): Product[] {
       return copy.sort(
         (a, b) =>
           Number(b.isFeatured ?? false) - Number(a.isFeatured ?? false) ||
-          (b.soldCount ?? 0) - (a.soldCount ?? 0)
+          (b.soldCount ?? 0) - (a.soldCount ?? 0),
       );
   }
 }
 
 function matchesFilter(p: Product, q: ProductQuery): boolean {
   if (q.categorySlug && p.categorySlug !== q.categorySlug) return false;
-  if (q.collectionSlug && !p.collectionSlugs?.includes(q.collectionSlug)) return false;
+  if (q.collectionSlug && !p.collectionSlugs?.includes(q.collectionSlug))
+    return false;
   if (q.isNewArrival && !p.isNewArrival) return false;
   if (q.isBestseller && !p.isBestseller) return false;
   if (q.isFeatured && !p.isFeatured) return false;
@@ -150,7 +174,9 @@ function matchesFilter(p: Product, q: ProductQuery): boolean {
 
 // ── Public API ───────────────────────────────────────────────
 
-export async function getProducts(query: ProductQuery = {}): Promise<Paginated<Product>> {
+export async function getProducts(
+  query: ProductQuery = {},
+): Promise<Paginated<Product>> {
   const all = await loadProducts();
   const filtered = all.filter((p) => matchesFilter(p, query));
   const sorted = sortProducts(filtered, query.sort);
@@ -161,7 +187,13 @@ export async function getProducts(query: ProductQuery = {}): Promise<Paginated<P
   const start = (page - 1) * perPage;
   const items = sorted.slice(start, start + perPage);
 
-  return { items, total, page, perPage, totalPages: Math.max(1, Math.ceil(total / perPage)) };
+  return {
+    items,
+    total,
+    page,
+    perPage,
+    totalPages: Math.max(1, Math.ceil(total / perPage)),
+  };
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
@@ -174,14 +206,25 @@ export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
 }
 
 export async function getBestsellers(limit = 8): Promise<Product[]> {
-  return (await getProducts({ isBestseller: true, sort: "bestselling", perPage: limit })).items;
+  return (
+    await getProducts({
+      isBestseller: true,
+      sort: "bestselling",
+      perPage: limit,
+    })
+  ).items;
 }
 
 export async function getNewArrivals(limit = 8): Promise<Product[]> {
-  return (await getProducts({ isNewArrival: true, sort: "newest", perPage: limit })).items;
+  return (
+    await getProducts({ isNewArrival: true, sort: "newest", perPage: limit })
+  ).items;
 }
 
-export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
+export async function getRelatedProducts(
+  product: Product,
+  limit = 4,
+): Promise<Product[]> {
   const all = await loadProducts();
   const explicit = product.relatedSlugs
     ? all.filter((p) => product.relatedSlugs!.includes(p.slug))
@@ -189,16 +232,20 @@ export async function getRelatedProducts(product: Product, limit = 4): Promise<P
   if (explicit.length >= limit) return explicit.slice(0, limit);
   // fall back to same-category products
   const sameCat = all.filter(
-    (p) => p.categorySlug === product.categorySlug && p.slug !== product.slug
+    (p) => p.categorySlug === product.categorySlug && p.slug !== product.slug,
   );
   return [...explicit, ...sameCat].slice(0, limit);
 }
 
 export async function getCategories(): Promise<Category[]> {
-  return (await loadCategories()).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return (await loadCategories()).sort(
+    (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
+  );
 }
 
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+export async function getCategoryBySlug(
+  slug: string,
+): Promise<Category | null> {
   return (await loadCategories()).find((c) => c.slug === slug) ?? null;
 }
 
@@ -212,7 +259,9 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
   return [...blogPosts].sort((a, b) => +new Date(b.date) - +new Date(a.date));
 }
 
-export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+export async function getBlogPostBySlug(
+  slug: string,
+): Promise<BlogPost | null> {
   return blogPosts.find((p) => p.slug === slug) ?? null;
 }
 
