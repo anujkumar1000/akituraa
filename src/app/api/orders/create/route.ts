@@ -7,7 +7,11 @@ const FREE_SHIPPING_THRESHOLD = 99900;
 const SHIPPING_FLAT = 4900;
 
 const schema = z.object({
-  items: z.array(z.object({ slug: z.string(), quantity: z.number().int().positive() })).min(1),
+  items: z
+    .array(
+      z.object({ slug: z.string(), quantity: z.number().int().positive() }),
+    )
+    .min(1),
   contact: z.object({
     email: z.string().email(),
     phone: z.string().min(6),
@@ -31,12 +35,18 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid order details" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid order details" },
+      { status: 400 },
+    );
   }
   const { items, contact, address, couponCode } = parsed.data;
 
   if (!process.env.DATABASE_URL) {
-    return NextResponse.json({ error: "Store not configured (no database)." }, { status: 503 });
+    return NextResponse.json(
+      { error: "Store not configured (no database)." },
+      { status: 503 },
+    );
   }
 
   try {
@@ -58,7 +68,10 @@ export async function POST(req: Request) {
     });
 
     if (lineData.length === 0) {
-      return NextResponse.json({ error: "No purchasable items." }, { status: 400 });
+      return NextResponse.json(
+        { error: "No purchasable items." },
+        { status: 400 },
+      );
     }
 
     const subtotal = lineData.reduce((s, l) => s + l.unitPrice * l.qty, 0);
@@ -104,6 +117,9 @@ export async function POST(req: Request) {
     });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: "Could not create order" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Could not create order" },
+      { status: 500 },
+    );
   }
 }

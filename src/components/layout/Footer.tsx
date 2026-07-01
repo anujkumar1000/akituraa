@@ -11,10 +11,10 @@ const shopLinks = [
 ];
 
 const helpLinks = [
-  { label: "Shipping & returns", href: "/shipping" },
-  { label: "Track order", href: "/track" },
+  // { label: "Shipping & returns", href: "/shipping" },
+  // { label: "Track order", href: "/track" },
   { label: "FAQ", href: "/#faq" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact Us", href: "mailto:akitauraa@gmail.com" },
 ];
 
 const aboutLinks = [
@@ -94,6 +94,34 @@ export async function Footer() {
   );
 }
 
+// function FooterCol({
+//   title,
+//   links,
+// }: {
+//   title: string;
+//   links: { label: string; href: string }[];
+// }) {
+//   return (
+//     <div>
+//       <h3 className="font-display text-sm font-bold uppercase tracking-wide text-lav-900">
+//         {title}
+//       </h3>
+//       <ul className="mt-3 space-y-2">
+//         {links.map((l) => (
+//           <li key={l.href}>
+//             <Link
+//               href={l.href}
+//               className="text-sm text-muted hover:text-lav-700"
+//             >
+//               {l.label}
+//             </Link>
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+
 function FooterCol({
   title,
   links,
@@ -106,15 +134,26 @@ function FooterCol({
       <h3 className="font-display text-sm font-bold uppercase tracking-wide text-lav-900">
         {title}
       </h3>
+
       <ul className="mt-3 space-y-2">
         {links.map((l) => (
           <li key={l.href}>
-            <Link
-              href={l.href}
-              className="text-sm text-muted hover:text-lav-700"
-            >
-              {l.label}
-            </Link>
+            {l.href.startsWith("mailto:") ? (
+              <a
+                href={l.href}
+                rel="noopener noreferrer"
+                className="text-sm text-muted hover:text-lav-700"
+              >
+                {l.label}
+              </a>
+            ) : (
+              <Link
+                href={l.href}
+                className="text-sm text-muted hover:text-lav-700"
+              >
+                {l.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
