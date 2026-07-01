@@ -16,7 +16,7 @@ export default function AboutPage() {
       {/* <div className="glass rounded-[32px] border border-lav-200 p-8 shadow-float sm:p-12"> */}
       <div className="mb-8 text-center">
         <Image
-          src="/akito.jpg"
+          src="/akito1.jpg"
           alt="Akito"
           width={160}
           height={160}
