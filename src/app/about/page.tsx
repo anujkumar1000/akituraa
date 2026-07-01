@@ -16,11 +16,11 @@ export default function AboutPage() {
       {/* <div className="glass rounded-[32px] border border-lav-200 p-8 shadow-float sm:p-12"> */}
       <div className="mb-8 text-center">
         <Image
-          src="/images/akito.jpg"
+          src="/akito.jpg"
           alt="Akito"
           width={160}
           height={160}
-          className="mx-auto rounded-full border-4 border-lav-200 object-cover shadow-float"
+          className="mx-auto aspect-square rounded-full object-cover border-4 border-lav-200 shadow-float"
         />
 
         <p className="mt-4 font-display text-2xl font-bold text-lav-700">
