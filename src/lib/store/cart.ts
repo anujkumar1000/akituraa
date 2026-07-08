@@ -30,7 +30,7 @@ interface CartState {
   subtotal: () => number;
 }
 
-export const FREE_SHIPPING_THRESHOLD = 99900; // ₹999 in paise
+export const FREE_SHIPPING_THRESHOLD = 49900; // ₹499 in paise
 export const SHIPPING_FLAT = 4900; // ₹49
 
 export const useCart = create<CartState>()(
@@ -53,7 +53,7 @@ export const useCart = create<CartState>()(
               lines: s.lines.map((l) =>
                 l.id === id
                   ? { ...l, quantity: Math.min(l.maxQty, l.quantity + qty) }
-                  : l
+                  : l,
               ),
             };
           }
@@ -76,13 +76,16 @@ export const useCart = create<CartState>()(
         });
       },
 
-      remove: (id) => set((s) => ({ lines: s.lines.filter((l) => l.id !== id) })),
+      remove: (id) =>
+        set((s) => ({ lines: s.lines.filter((l) => l.id !== id) })),
 
       setQty: (id, qty) =>
         set((s) => ({
           lines: s.lines
             .map((l) =>
-              l.id === id ? { ...l, quantity: Math.max(0, Math.min(l.maxQty, qty)) } : l
+              l.id === id
+                ? { ...l, quantity: Math.max(0, Math.min(l.maxQty, qty)) }
+                : l,
             )
             .filter((l) => l.quantity > 0),
         })),
@@ -90,8 +93,9 @@ export const useCart = create<CartState>()(
       clear: () => set({ lines: [] }),
 
       count: () => get().lines.reduce((n, l) => n + l.quantity, 0),
-      subtotal: () => get().lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0),
+      subtotal: () =>
+        get().lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0),
     }),
-    { name: "akitauraa-cart" }
-  )
+    { name: "akitauraa-cart" },
+  ),
 );

@@ -34,7 +34,9 @@ export default function PrivacyPage() {
           </Policy>
 
           <Policy>
-            Shipping charges are fixed at <strong>₹99</strong> for all orders.
+            We offer <strong>FREE shipping on all orders above ₹499</strong>.
+            For orders below ₹499, a flat shipping fee of <strong>₹49</strong>{" "}
+            will be charged.
           </Policy>
 
           <Policy>Cash On Delivery (COD) is currently not available.</Policy>

@@ -1,181 +1,213 @@
 @import "tailwindcss";
 
 /* ────────────────────────────────────────────────────────────
-   AKITAURAA DESIGN SYSTEM
-   Soft Lavender · Kawaii · Y2K · Dreamy · Gen-Z
+   AKITAURAA.EXE — DESIGN SYSTEM
+   Light lilac · retro desktop application · Windows-XP UI ·
+   pixel accents · uppercase mono labels
    Tailwind v4 CSS-first config (@theme)
    ──────────────────────────────────────────────────────────── */
 
 @theme {
-  /* ── Brand palette (lavender) ───────────────────────────── */
-  --color-lav-50: #faf8ff;
-  --color-lav-100: #f7f2ff;
-  --color-lav-150: #f2ecf7;
-  --color-lav-200: #e9d6f6;
-  --color-lav-300: #dccef2;
-  --color-lav-400: #c8b4df;
-  --color-lav-500: #b9a5d6;
-  --color-lav-600: #8f79b8;
-  --color-lav-700: #6f5a98;
-  --color-lav-800: #524178;
-  --color-lav-900: #382b54;
-
-  /* ── Accents (kawaii pops) ──────────────────────────────── */
-  --color-blush: #ffd6e8;
-  --color-blush-deep: #ff9ec4;
-  --color-mint: #cdeede;
-  --color-butter: #fff1c2;
-  --color-sky: #cfe6ff;
+  /* ── XP palette ─────────────────────────────────────────── */
+  --color-xp-desktop: #cbbfe4;   /* page/desktop background   */
+  --color-xp-window: #e2daf2;    /* window body               */
+  --color-xp-panel: #ece6f7;     /* lighter panel             */
+  --color-xp-white: #f7f4fc;     /* near-white surfaces       */
+  --color-xp-titlebar: #c7bbe3;  /* window title bars         */
+  --color-xp-inset: #d6cbec;     /* inset fields / strips     */
+  --color-xp-ink: #443a68;       /* primary text              */
+  --color-xp-ink-2: #574d80;     /* borders / secondary ink   */
+  --color-xp-muted: #7f74a8;     /* muted text                */
+  --color-xp-accent: #6f61ad;    /* accent purple             */
+  --color-xp-highlight: #c1b3e6; /* active/selected fill      */
+  --color-xp-pink: #b492d8;      /* hearts / love accents     */
 
   /* ── Semantic ───────────────────────────────────────────── */
-  --color-background: #faf8ff;
-  --color-surface: #ffffff;
-  --color-foreground: #382b54;
-  --color-muted: #8a7fa6;
-  --color-primary: #8f79b8;
-  --color-primary-foreground: #ffffff;
-  --color-ring: #b9a5d6;
-  --color-border: #e9d6f6;
+  --color-background: #cbbfe4;
+  --color-foreground: #443a68;
+  --color-surface: #f7f4fc;
+  --color-muted: #7f74a8;
+  --color-primary: #6f61ad;
+  --color-primary-foreground: #f7f4fc;
+  --color-ring: #c1b3e6;
+  --color-border: #d6cbec;
+
+  /* ── Legacy lavender tokens → remapped to XP lilac so every
+        not-yet-rewritten page inherits the theme automatically */
+  --color-lav-50: #f7f4fc;
+  --color-lav-100: #f0ebf9;
+  --color-lav-150: #ece6f7;
+  --color-lav-200: #d6cbec;
+  --color-lav-300: #c1b3e6;
+  --color-lav-400: #a996d6;
+  --color-lav-500: #8f7cc4;
+  --color-lav-600: #6f61ad;
+  --color-lav-700: #574d80;
+  --color-lav-800: #4a4070;
+  --color-lav-900: #443a68;
+  --color-blush: #e3d3ee;
+  --color-blush-deep: #a17fd0;
+  --color-mint: #cfe6d8;
+  --color-butter: #efe3bd;
+  --color-sky: #cdd9f2;
+
+  /* ── Aura tokens (previous gothic theme) → lilac equivalents
+        so any straggler component still renders coherently */
+  --color-aura-bg: #cbbfe4;
+  --color-aura-bg-2: #beb0dc;
+  --color-aura-panel: #ece6f7;
+  --color-aura-panel-2: #e2daf2;
+  --color-aura-panel-3: #d6cbec;
+  --color-aura-border: #574d80;
+  --color-aura-border-dim: #a496c9;
+  --color-aura-glow: #8f7cc4;
+  --color-aura-accent: #6f61ad;
+  --color-aura-accent-2: #b492d8;
+  --color-aura-text: #443a68;
+  --color-aura-muted: #7f74a8;
 
   /* ── Typography ─────────────────────────────────────────── */
-  --font-display: var(--font-fredoka), "Comic Sans MS", system-ui, sans-serif;
-  --font-body: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-logo: var(--font-fredoka), ui-rounded, system-ui, sans-serif;
+  --font-nav: var(--font-plexmono), ui-monospace, monospace;
+  --font-body: var(--font-plexmono), ui-monospace, monospace;
+  --font-display: var(--font-plexmono), ui-monospace, monospace;
+  --font-pixel: var(--font-silkscreen), ui-monospace, monospace;
 
-  /* ── Radii (soft, pill-forward) ─────────────────────────── */
-  --radius-sm: 0.625rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
-  --radius-2xl: 2.5rem;
-  --radius-blob: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  /* ── Radii (sharp, desktop-app) ─────────────────────────── */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 6px;
 
-  /* ── Shadows (soft, dreamy) ─────────────────────────────── */
-  --shadow-soft: 0 8px 30px -8px rgba(143, 121, 184, 0.25);
-  --shadow-glow:
-    0 0 0 1px rgba(220, 206, 242, 0.6),
-    0 12px 40px -12px rgba(143, 121, 184, 0.35);
-  --shadow-float: 0 18px 50px -16px rgba(143, 121, 184, 0.4);
+  /* ── Shadows (hard offset, XP style) ────────────────────── */
+  --shadow-soft: 3px 3px 0 rgba(68, 58, 104, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(87, 77, 128, 0.5), 3px 3px 0 rgba(68, 58, 104, 0.16);
+  --shadow-float: 6px 6px 0 rgba(68, 58, 104, 0.2);
 
-  /* ── Motion ─────────────────────────────────────────────── */
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* ── Custom animations ──────────────────────────────────── */
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-float-slow: float 9s ease-in-out infinite;
+  /* ── Animations ─────────────────────────────────────────── */
+  --animate-float: xp-float 7s ease-in-out infinite;
+  --animate-float-slow: xp-float 11s ease-in-out infinite;
   --animate-wiggle: wiggle 3s ease-in-out infinite;
-  --animate-twinkle: twinkle 2.4s ease-in-out infinite;
-  --animate-marquee: marquee 28s linear infinite;
+  --animate-twinkle: twinkle 2.6s ease-in-out infinite;
+  --animate-marquee: marquee 30s linear infinite;
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-14px) rotate(3deg);
-  }
+@keyframes xp-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 @keyframes wiggle {
-  0%,
-  100% {
-    transform: rotate(-4deg);
-  }
-  50% {
-    transform: rotate(4deg);
-  }
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
 }
 @keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.35;
-    transform: scale(0.85);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 @keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* ── Base ──────────────────────────────────────────────────── */
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-  /* body {
-    
-    background:
-      radial-gradient(1200px 600px at 80% -10%, var(--color-lav-200), transparent 60%),
-      radial-gradient(900px 500px at -10% 10%, var(--color-blush), transparent 55%),
-      var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-body);
-    -webkit-font-smoothing: antialiased;
-  } */
+  html { scroll-behavior: smooth; }
 
   body {
-    background:
-      radial-gradient(circle at top right, #d9c3ff 0%, transparent 30%),
-      radial-gradient(circle at top left, #ffe3f5 0%, transparent 25%),
-      linear-gradient(180deg, #fcfaff 0%, #f7f0ff 50%, #f1e6ff 100%);
-
-    color: var(--color-foreground);
+    background-color: var(--color-xp-desktop);
+    /* faint pixel grid, like a desktop pattern */
+    background-image:
+      linear-gradient(rgba(87, 77, 128, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(87, 77, 128, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: var(--color-xp-ink);
     font-family: var(--font-body);
+    font-size: 0.95rem;
     -webkit-font-smoothing: antialiased;
   }
 
-  .glass {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid #eadcff;
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  .font-display {
-    font-family: var(--font-display);
-    letter-spacing: -0.01em;
-  }
-  ::selection {
-    background: var(--color-lav-300);
-    color: var(--color-lav-900);
+  ::selection { background: var(--color-xp-highlight); color: var(--color-xp-ink); }
+
+  /* subtle paper noise */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
-/* ── Reusable utilities ────────────────────────────────────── */
+/* ── Utilities ─────────────────────────────────────────────── */
+
+/* Application window: light body, 1px ink border, hard shadow */
+@utility xp-window {
+  background: var(--color-xp-panel);
+  border: 1px solid var(--color-xp-ink-2);
+  box-shadow: 3px 3px 0 rgba(68, 58, 104, 0.16);
+}
+
+/* Window title bar strip */
+@utility xp-titlebar {
+  background: var(--color-xp-titlebar);
+  border-bottom: 1px solid var(--color-xp-ink-2);
+}
+
+/* Inset field / strip */
+@utility xp-inset {
+  background: var(--color-xp-inset);
+  border: 1px solid var(--color-xp-ink-2);
+}
+
+/* Pixel-stepped frame */
+@utility pixel-border {
+  border: 1px solid var(--color-xp-ink-2);
+  box-shadow: 2px 2px 0 rgba(68, 58, 104, 0.22);
+  image-rendering: pixelated;
+}
+
+/* Legacy aliases (previous themes) → mapped to XP visuals */
+@utility panel {
+  background: var(--color-xp-panel);
+  border: 1px solid var(--color-xp-ink-2);
+  box-shadow: 3px 3px 0 rgba(68, 58, 104, 0.16);
+}
+@utility panel-solid {
+  background: var(--color-xp-white);
+  border: 1px solid var(--color-xp-ink-2);
+  box-shadow: 3px 3px 0 rgba(68, 58, 104, 0.16);
+}
+@utility titlebar {
+  background: var(--color-xp-titlebar);
+  border-bottom: 1px solid var(--color-xp-ink-2);
+}
+@utility text-glow {
+  text-shadow: 0 0 8px rgba(143, 124, 196, 0.4);
+}
 @utility text-gradient {
-  background: linear-gradient(
-    100deg,
-    var(--color-lav-600),
-    var(--color-blush-deep) 60%,
-    var(--color-lav-500)
-  );
+  background: linear-gradient(100deg, var(--color-xp-accent), var(--color-xp-pink) 60%, var(--color-xp-accent));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-
 @utility glass {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(236, 230, 247, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-xp-inset);
 }
 
-/* Respect reduced-motion globally */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

@@ -45,12 +45,19 @@ function parseForm(form: FormData) {
   });
 }
 
-export async function saveProduct(_prev: ActionResult | null, form: FormData): Promise<ActionResult> {
-  if (!(await isAdminAuthed())) return { ok: false, message: "Not authorised." };
+export async function saveProduct(
+  _prev: ActionResult | null,
+  form: FormData,
+): Promise<ActionResult> {
+  if (!(await isAdminAuthed()))
+    return { ok: false, message: "Not authorised." };
 
   const parsed = parseForm(form);
   if (!parsed.success) {
-    return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return {
+      ok: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid input",
+    };
   }
   const data = parsed.data;
 
@@ -64,7 +71,9 @@ export async function saveProduct(_prev: ActionResult | null, form: FormData): P
 
   try {
     const { prisma } = await import("@/lib/prisma");
-    const category = await prisma.category.findUnique({ where: { slug: data.categorySlug } });
+    const category = await prisma.category.findUnique({
+      where: { slug: data.categorySlug },
+    });
     if (!category) return { ok: false, message: "Category not found." };
 
     const base = {
@@ -86,18 +95,25 @@ export async function saveProduct(_prev: ActionResult | null, form: FormData): P
       // Replace the primary image when a new one was uploaded.
       if (data.imageUrl) {
         await prisma.productImage.deleteMany({ where: { productId: data.id } });
-        await prisma.productImage.create({ data: { productId: data.id, url: data.imageUrl, sortOrder: 0 } });
+        await prisma.productImage.create({
+          data: { productId: data.id, url: data.imageUrl, sortOrder: 0 },
+        });
       }
     } else {
       const created = await prisma.product.create({ data: base });
       if (data.imageUrl) {
-        await prisma.productImage.create({ data: { productId: created.id, url: data.imageUrl, sortOrder: 0 } });
+        await prisma.productImage.create({
+          data: { productId: created.id, url: data.imageUrl, sortOrder: 0 },
+        });
       }
     }
 
     revalidatePath("/admin/products");
     revalidatePath("/shop");
-    return { ok: true, message: data.id ? "Product updated 💜" : "Product created 💜" };
+    return {
+      ok: true,
+      message: data.id ? "Product updated 💜" : "Product created 💜",
+    };
   } catch (e) {
     console.error(e);
     return { ok: false, message: "Database error — check your connection." };
@@ -105,15 +121,54 @@ export async function saveProduct(_prev: ActionResult | null, form: FormData): P
 }
 
 export async function deleteProduct(id: string): Promise<ActionResult> {
-  if (!(await isAdminAuthed())) return { ok: false, message: "Not authorised." };
-  if (!dbConfigured) return { ok: false, message: "DATABASE_URL not set — cannot delete." };
+  if (!(await isAdminAuthed())) {
+    return { ok: false, message: "Not authorised." };
+  }
+
+  if (!dbConfigured) {
+    return {
+      ok: false,
+      message: "DATABASE_URL not set — cannot delete.",
+    };
+  }
+
   try {
     const { prisma } = await import("@/lib/prisma");
-    await prisma.product.delete({ where: { id } });
+
+    console.log("🗑 Delete request for ID:", id);
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    console.log("📦 Product found:", product);
+
+    if (!product) {
+      return {
+        ok: false,
+        message: "Product not found in database.",
+      };
+    }
+
+    await prisma.product.delete({
+      where: { id },
+    });
+
+    console.log("✅ Product deleted");
+
     revalidatePath("/admin/products");
-    return { ok: true, message: "Deleted." };
+    revalidatePath("/shop");
+
+    return {
+      ok: true,
+      message: "Deleted successfully.",
+    };
   } catch (e) {
-    console.error(e);
-    return { ok: false, message: "Could not delete." };
+    console.error("❌ Delete Error:", e);
+
+    return {
+      ok: false,
+      message: e instanceof Error ? e.message : "Could not delete.",
+    };
   }
 }

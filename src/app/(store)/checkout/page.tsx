@@ -35,13 +35,64 @@ export default function CheckoutPage() {
     state: "",
     pincode: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    phone: "",
+    fullName: "",
+    line1: "",
+    city: "",
+    state: "",
+    pincode: "",
+  });
+
+  function validateForm() {
+    const newErrors = {
+      email: "",
+      phone: "",
+      fullName: "",
+      line1: "",
+      city: "",
+      state: "",
+      pincode: "",
+    };
+
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+      newErrors.email = "Enter a valid email";
+    }
+
+    if (!form.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^[6-9]\d{9}$/.test(form.phone)) {
+      newErrors.phone = "Enter a valid 10-digit mobile number";
+    }
+
+    if (!form.fullName.trim()) newErrors.fullName = "Full name is required";
+
+    if (!form.line1.trim()) newErrors.line1 = "Address is required";
+
+    if (!form.city.trim()) newErrors.city = "City is required";
+
+    if (!form.state.trim()) newErrors.state = "State is required";
+
+    if (!/^\d{6}$/.test(form.pincode)) {
+      newErrors.pincode = "Enter a valid 6-digit PIN code";
+    }
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some(Boolean);
+  }
+
   useEffect(() => setMounted(true), []);
 
   if (!mounted)
     return <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">Loading…</div>;
 
   const sub = subtotal();
-  const shipping = sub >= FREE_SHIPPING_THRESHOLD || lines.length === 0 ? 0 : SHIPPING_FLAT;
+  const shipping =
+    sub >= FREE_SHIPPING_THRESHOLD || lines.length === 0 ? 0 : SHIPPING_FLAT;
   const total = sub + shipping;
 
   if (lines.length === 0) {
@@ -76,7 +127,10 @@ export default function CheckoutPage() {
 
   async function pay() {
     setError("");
-    if (!valid()) return setError("Please fill in all required fields 🥺");
+    // if (!valid()) return setError("Please fill in all required fields 🥺");
+    if (!validateForm()) {
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/orders/create", {
@@ -180,6 +234,7 @@ export default function CheckoutPage() {
               onChange={update("email")}
               type="email"
               placeholder="you@email.com"
+              error={errors.email}
             />
             <Field
               label="Phone"
@@ -187,6 +242,7 @@ export default function CheckoutPage() {
               onChange={update("phone")}
               type="tel"
               placeholder="10-digit mobile"
+              error={errors.phone}
             />
           </Section>
 
@@ -195,11 +251,13 @@ export default function CheckoutPage() {
               label="Full name"
               value={form.fullName}
               onChange={update("fullName")}
+              error={errors.fullName}
             />
             <Field
               label="Address line 1"
               value={form.line1}
               onChange={update("line1")}
+              error={errors.line1}
             />
             <Field
               label="Address line 2 (optional)"
@@ -208,17 +266,24 @@ export default function CheckoutPage() {
               required={false}
             />
             <div className="grid grid-cols-2 gap-3">
-              <Field label="City" value={form.city} onChange={update("city")} />
+              <Field
+                label="City"
+                value={form.city}
+                onChange={update("city")}
+                error={errors.city}
+              />
               <Field
                 label="State"
                 value={form.state}
                 onChange={update("state")}
+                error={errors.state}
               />
             </div>
             <Field
               label="PIN code"
               value={form.pincode}
               onChange={update("pincode")}
+              error={errors.pincode}
             />
           </Section>
 
@@ -321,6 +386,7 @@ function Field({
   type = "text",
   placeholder,
   required = true,
+  error,
 }: {
   label: string;
   value: string;
@@ -328,6 +394,7 @@ function Field({
   type?: string;
   placeholder?: string;
   required?: boolean;
+  error?: string;
 }) {
   return (
     <label className="block">
@@ -335,13 +402,20 @@ function Field({
         {label}
         {required && " *"}
       </span>
+
       <input
         value={value}
         onChange={onChange}
         type={type}
         placeholder={placeholder}
-        className="h-11 w-full rounded-xl border border-lav-200 px-4 text-sm focus:outline-none focus:ring-4 focus:ring-lav-300"
+        className={`h-11 w-full rounded-xl border px-4 text-sm focus:outline-none focus:ring-4 ${
+          error
+            ? "border-red-500 focus:ring-red-200"
+            : "border-lav-200 focus:ring-lav-300"
+        }`}
       />
+
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </label>
   );
 }

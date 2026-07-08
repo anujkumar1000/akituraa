@@ -1,5 +1,5 @@
 const items = [
-  "✨ Free shipping over ₹999",
+  "✨ Free shipping over ₹499",
   "💜 Handmade in small batches",
   "🦋 New drops every week",
   "🎁 10% off your first order",

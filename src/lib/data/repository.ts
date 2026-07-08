@@ -32,10 +32,12 @@ const EMOJI_BY_SLUG = new Map(sampleCategories.map((c) => [c.slug, c.emoji]));
 let productsCache: Product[] | null = null;
 let categoriesCache: Category[] | null = null;
 
+
+
 async function loadProducts(): Promise<Product[]> {
-  if (productsCache) {
-    return productsCache;
-  }
+  // if (productsCache) {
+  //   return productsCache;
+  // }
 
   if (!DB_CONFIGURED) {
     productsCache = sampleProducts;
@@ -320,4 +322,9 @@ export async function getBlogPostBySlug(
 
 export async function getAllBlogSlugs(): Promise<string[]> {
   return blogPosts.map((p) => p.slug);
+}
+
+export function clearRepositoryCache() {
+  productsCache = null;
+  categoriesCache = null;
 }

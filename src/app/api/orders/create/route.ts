@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createRazorpayOrder, RAZORPAY_CONFIGURED } from "@/lib/razorpay";
 import { findCoupon, couponDiscount } from "@/data/coupons";
 
-const FREE_SHIPPING_THRESHOLD = 99900;
+const FREE_SHIPPING_THRESHOLD = 49900;
 const SHIPPING_FLAT = 4900;
 
 const schema = z.object({
@@ -78,7 +78,9 @@ export async function POST(req: Request) {
 
     const coupon = couponCode ? findCoupon(couponCode) : undefined;
     const discount = coupon ? couponDiscount(coupon, subtotal) : 0;
-    const freeShip = subtotal - discount >= FREE_SHIPPING_THRESHOLD || coupon?.type === "FREE_SHIPPING";
+    const freeShip =
+      subtotal - discount >= FREE_SHIPPING_THRESHOLD ||
+      coupon?.type === "FREE_SHIPPING";
     const shipping = freeShip ? 0 : SHIPPING_FLAT;
     const total = Math.max(0, subtotal - discount + shipping);
 

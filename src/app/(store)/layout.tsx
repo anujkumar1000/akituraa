@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { getCategories } from "@/lib/data/repository";
 import { SITE } from "@/lib/utils";
+import { Navbar, TaskbarBottom, TitleBarTop } from "@/components/xp/chrome";
 
 const orgJsonLd = {
   "@context": "https://schema.org",
@@ -25,9 +26,11 @@ export default async function StoreLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
       />
+      <TitleBarTop />
       <AnnouncementBar />
-      <Header categories={categories} />
-      <main>{children}</main>
+      {/* <Header categories={categories} /> */}
+      <Navbar categories={categories} />
+      <main>{children}</main> <TaskbarBottom />
       <Footer />
       <CartDrawer />
     </>
