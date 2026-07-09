@@ -32,12 +32,10 @@ const EMOJI_BY_SLUG = new Map(sampleCategories.map((c) => [c.slug, c.emoji]));
 let productsCache: Product[] | null = null;
 let categoriesCache: Category[] | null = null;
 
-
-
 async function loadProducts(): Promise<Product[]> {
-  // if (productsCache) {
-  //   return productsCache;
-  // }
+  if (productsCache) {
+    return productsCache;
+  }
 
   if (!DB_CONFIGURED) {
     productsCache = sampleProducts;
@@ -303,9 +301,23 @@ export async function getCategoryBySlug(
 ): Promise<Category | null> {
   return (await loadCategories()).find((c) => c.slug === slug) ?? null;
 }
-
 export async function getAllProductSlugs(): Promise<string[]> {
-  return (await loadProducts()).map((p) => p.slug);
+  if (!DB_CONFIGURED) {
+    return sampleProducts.map((p) => p.slug);
+  }
+
+  const { prisma } = await import("@/lib/prisma");
+
+  const rows = await prisma.product.findMany({
+    where: {
+      isActive: true,
+    },
+    select: {
+      slug: true,
+    },
+  });
+
+  return rows.map((r) => r.slug);
 }
 
 // ── Blog ─────────────────────────────────────────────────────
