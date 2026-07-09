@@ -29,7 +29,7 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const p = await getProductBySlug(slug);
+  const p = await getProductBySlug(decodeURIComponent(slug));
   if (!p) return {};
   return {
     title: p.seoTitle ?? p.name,
@@ -45,7 +45,7 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const p = await getProductBySlug(slug);
+  const p = await getProductBySlug(decodeURIComponent(slug));
   if (!p) notFound();
 
   const [related, category] = await Promise.all([
@@ -208,8 +208,17 @@ export default async function ProductPage({ params }: { params: Params }) {
               icon={<Truck className="h-4 w-4" />}
               title="Shipping & returns"
             >
-              {p.shippingInfo ??
-                "Ships in 2–4 days. Free shipping over ₹999. Easy 7-day returns."}
+              {p.shippingInfo ?? (
+                <>
+                  Orders are shipped within 6–7 days. Enjoy free shipping on
+                  orders above ₹499.
+                  <br />
+                  💌 <strong>Please note:</strong> We do not offer exchanges or
+                  returns unless the product arrives damaged. In case of damage,
+                  please share a 360° unboxing video as proof to process your
+                  request. 💗
+                </>
+              )}
             </DetailRow>
           </div>
 

@@ -249,11 +249,17 @@ export async function getProducts(
   };
 }
 
+// export async function getProductBySlug(slug: string): Promise<Product | null> {
+//   const all = await loadProducts();
+//   return all.find((p) => p.slug === slug) ?? null;
+// }
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const all = await loadProducts();
-  return all.find((p) => p.slug === slug) ?? null;
-}
 
+  const normalized = slug.trim().toLowerCase();
+
+  return all.find((p) => p.slug.trim().toLowerCase() === normalized) ?? null;
+}
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   return (await getProducts({ isFeatured: true, perPage: limit })).items;
 }
