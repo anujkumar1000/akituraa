@@ -82,10 +82,20 @@
 
 export const revalidate = 60; // ISR — reflect catalog edits in ~1 min
 
-import { getCategories, getFeaturedProducts, getBestsellers } from "@/lib/data/repository";
+import {
+  getCategories,
+  getFeaturedProducts,
+  getBestsellers,
+} from "@/lib/data/repository";
 import { HeroWindow } from "@/components/xp/hero";
 import { MarqueeStrip, CategoryCards } from "@/components/xp/extras";
-import { NavigationWindow, Reminder, AboutPanel, TrustedBy, ConnectPanel } from "@/components/xp/widgets";
+import {
+  NavigationWindow,
+  Reminder,
+  AboutPanel,
+  TrustedBy,
+  ConnectPanel,
+} from "@/components/xp/widgets";
 import { NowPlaying } from "@/components/xp/nowplaying";
 import { XPProductCard } from "@/components/xp/product";
 import { XPLink } from "@/components/xp/core";
@@ -99,7 +109,10 @@ export default async function HomePage() {
 
   // All product data flows from the repository — nothing hardcoded.
   const pool = featured.length ? featured : bestsellers;
-  const gridProducts = pool.slice(0, 4);
+  // const gridProducts = pool.slice(0, 4);
+  const gridProducts = bestsellers.length
+    ? bestsellers.slice(0, 4)
+    : featured.slice(0, 4);
 
   return (
     <div className="grid gap-4 lg:grid-cols-[236px_minmax(0,1fr)_236px]">
@@ -114,15 +127,19 @@ export default async function HomePage() {
       <div className="order-1 flex min-w-0 flex-col gap-4 lg:order-2">
         <HeroWindow products={pool} />
         <MarqueeStrip />
-        <CategoryCards products={pool.slice(3, 6).length ? pool.slice(3, 6) : pool} />
+        <CategoryCards
+          products={pool.slice(3, 6).length ? pool.slice(3, 6) : pool}
+        />
 
         {/* Featured grid — real catalog via repository */}
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-nav text-[13px] font-semibold uppercase tracking-[0.16em] text-xp-ink">
-              -- FEATURED_PIECES
+              -- BESTSELLERS
             </h2>
-            <XPLink href="/shop" size="sm">VIEW ALL</XPLink>
+            <XPLink href="/shop" size="sm">
+              VIEW ALL
+            </XPLink>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
             {gridProducts.map((p, i) => (

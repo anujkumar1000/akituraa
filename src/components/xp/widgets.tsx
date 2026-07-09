@@ -100,7 +100,7 @@ export function TrustedBy() {
       <div className="flex items-center gap-3">
         <Globe className="h-10 w-10 text-xp-ink-2" strokeWidth={1.2} />
         <div>
-          <p className="font-nav text-[13px] font-semibold text-xp-ink">10K+</p>
+          <p className="font-nav text-[13px] font-semibold text-xp-ink">100+</p>
           <p className="font-nav text-[11px] lowercase text-xp-muted">happy<br />customers</p>
         </div>
       </div>
