@@ -35,7 +35,7 @@ export function ShopToolbar({ total }: { total: number }) {
   }
 
   return (
-    <div className="sticky top-16 z-30 -mx-4 mb-6 border-b border-lav-200 bg-background/80 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-4">
+    <div className="static -mx-4 mb-6 border-b border-lav-200 bg-background/80 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-4 lg:sticky lg:top-16 lg:z-30">
       <div className="flex flex-wrap items-center gap-2">
         <span className="mr-1 text-sm text-muted">{total} pieces</span>
 

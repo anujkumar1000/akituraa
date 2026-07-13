@@ -127,9 +127,10 @@ export default async function HomePage() {
       <div className="order-1 flex min-w-0 flex-col gap-4 lg:order-2">
         <HeroWindow products={pool} />
         <MarqueeStrip />
-        <CategoryCards
+        {/* <CategoryCards
           products={pool.slice(3, 6).length ? pool.slice(3, 6) : pool}
-        />
+        /> */}
+        <CategoryCards products={featured.slice(0, 3)} />
 
         {/* Featured grid — real catalog via repository */}
         <section>

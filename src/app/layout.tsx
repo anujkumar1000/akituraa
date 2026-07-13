@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/utils";
+import MusicProvider from "@/components/music-provider";
+import MiniPlayer from "@/components/mini-player";
 
 const fredoka = Fredoka({
   subsets: ["latin"],
@@ -58,7 +60,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}>
-      <body className="min-h-dvh antialiased">{children}</body>
+      <body className="min-h-dvh antialiased">
+        <MusicProvider>
+          {children} <MiniPlayer />
+        </MusicProvider>
+      </body>
     </html>
   );
 }

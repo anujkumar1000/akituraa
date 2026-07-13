@@ -203,27 +203,14 @@ export function HeroWindow({ products }: { products: Product[] }) {
                 EXPLORE COLLECTIONS
               </XPLink>
             </div>
-            <div className="mt-6 max-w-md rounded-[3px] border border-xp-ink-2 bg-xp-white/80 p-4">
-              <h3 className="font-nav text-[12px] font-bold uppercase tracking-[0.14em] text-xp-accent">
-                ୨୧ ✨ Welcome to Akitauraa ✨ ୨୧
-              </h3>
-
-              <div className="mt-3 space-y-2 font-nav text-[12px] leading-6 text-xp-ink">
-                <p>
-                  Because accessories represent your <strong>AURA</strong> 💜🪽
+            <div className="mt-10 flex justify-center">
+              <div className="animate-pulse rounded-md border-2 border-xp-accent bg-xp-white px-5 py-3 shadow-[4px_4px_0px_rgba(111,97,173,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(111,97,173,0.45)]">
+                <p className="font-nav text-[15px] font-extrabold uppercase tracking-[0.12em] text-xp-accent">
+                  🎁 FREE SHIPPING + FREEBIES
                 </p>
-
-                <p>
-                  Cute handmade accessories crafted with love ♡<br />
-                  Find a piece that matches your vibe and makes you sparkle ✨
-                </p>
-
-                <p className="font-semibold text-xp-accent">
-                  🎁 FREE SHIPPING + FREEBIES on orders above ₹499 🎀
-                </p>
-
-                <p>
-                  Thank you for supporting our small handmade dream shop 🫶🏻🌸
+                <p className="mt-1 text-center font-nav text-[12px] font-semibold uppercase tracking-[0.08em] text-xp-ink">
+                  ON ORDERS ABOVE <span className="text-xp-accent">₹499</span>{" "}
+                  🎀
                 </p>
               </div>
             </div>
