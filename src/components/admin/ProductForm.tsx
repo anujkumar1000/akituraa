@@ -41,7 +41,6 @@ export function ProductForm({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  
   return (
     <form action={formAction} className="max-w-2xl space-y-5">
       {product && <input type="hidden" name="id" value={product.id} />}
@@ -170,10 +169,10 @@ export function ProductForm({
           Product image
         </span>
         <ImageUpload
-          defaultUrl={
-            product?.images?.[0]?.url?.startsWith("http")
-              ? product.images[0].url
-              : undefined
+          defaultUrls={
+            product?.images
+              ?.map((img) => img.url)
+              .filter((url) => url.startsWith("http")) ?? []
           }
         />
         <p className="mt-2 text-xs text-muted">
@@ -207,85 +206,85 @@ export function ProductForm({
         </p>
       )}
 
-    <div className="flex gap-3">
-  <SubmitButton editing={editing} />
+      <div className="flex gap-3">
+        <SubmitButton editing={editing} />
 
-  {editing && (
-   <Button
-  type="button"
-  onClick={() => setShowDeleteModal(true)}
-className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-red-500 to-red-600 px-8 h-14 text-base font-display font-semibold text-white shadow-lg transition-all duration-300 hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-300 disabled:pointer-events-none disabled:opacity-50">
-   Delete Product
-</Button>
-  )}
+        {editing && (
+          <Button
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-red-500 to-red-600 px-8 h-14 text-base font-display font-semibold text-white shadow-lg transition-all duration-300 hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-300 disabled:pointer-events-none disabled:opacity-50"
+          >
+            Delete Product
+          </Button>
+        )}
 
-  <Link
-    href="/admin/products"
-    className="grid place-items-center rounded-full px-5 font-display font-semibold text-lav-700 hover:bg-lav-100"
-  >
-    Cancel
-  </Link>
-</div>
+        <Link
+          href="/admin/products"
+          className="grid place-items-center rounded-full px-5 font-display font-semibold text-lav-700 hover:bg-lav-100"
+        >
+          Cancel
+        </Link>
+      </div>
 
       <style>{`.input{height:2.75rem;width:100%;border-radius:0.75rem;border:1px solid var(--color-lav-200);padding:0 0.9rem;font-size:0.875rem;background:#fff}.input:focus{outline:none;box-shadow:0 0 0 4px var(--color-lav-300)}textarea.input{height:auto;padding:0.6rem 0.9rem}`}</style>
       {showDeleteModal && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-      <h2 className="text-2xl font-bold text-lav-900">
-        Delete Product?
-      </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+            <h2 className="text-2xl font-bold text-lav-900">Delete Product?</h2>
 
-      <p className="mt-3 text-sm text-gray-600">
-        This action cannot be undone. Are you sure you want to delete this product?
-      </p>
+            <p className="mt-3 text-sm text-gray-600">
+              This action cannot be undone. Are you sure you want to delete this
+              product?
+            </p>
 
-      <div className="mt-6 flex justify-end gap-3">
-        <button
-          type="button"
-          onClick={() => setShowDeleteModal(false)}
-          className="rounded-xl border px-5 py-2 hover:bg-gray-100"
-        >
-          Cancel
-        </button>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                className="rounded-xl border px-5 py-2 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
 
-      <button
-  type="button"
-  disabled={deleting}
-  className="rounded-xl bg-red-600 px-5 py-2 text-white hover:bg-red-700 disabled:opacity-50"
-  onClick={async () => {
-    if (!product) return;
+              <button
+                type="button"
+                disabled={deleting}
+                className="rounded-xl bg-red-600 px-5 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+                onClick={async () => {
+                  if (!product) return;
 
-    setDeleting(true);
+                  setDeleting(true);
 
-    const result = await deleteProduct(product.id);
+                  const result = await deleteProduct(product.id);
 
-    setShowDeleteModal(false);
+                  setShowDeleteModal(false);
 
-    if (result.ok) {
-      // Toast message ko next page ke liye store karo
-      sessionStorage.setItem(
-        "toast",
-        JSON.stringify({
-          success: true,
-          message: "Product deleted successfully 🎉",
-        })
-      );
+                  if (result.ok) {
+                    // Toast message ko next page ke liye store karo
+                    sessionStorage.setItem(
+                      "toast",
+                      JSON.stringify({
+                        success: true,
+                        message: "Product deleted successfully 🎉",
+                      }),
+                    );
 
-      router.replace("/admin/products");
-      router.refresh();
-      return;
-    }
+                    router.replace("/admin/products");
+                    router.refresh();
+                    return;
+                  }
 
-    setDeleting(false);
-    alert(result.message);
-  }}
->
-  {deleting ? "Deleting..." : "Delete"}
-</button>
-      </div>
-    </div>
-  </div>
-)}
+                  setDeleting(false);
+                  alert(result.message);
+                }}
+              >
+                {deleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

@@ -24,7 +24,8 @@ const productSchema = z.object({
   isFeatured: z.coerce.boolean().optional(),
   isBestseller: z.coerce.boolean().optional(),
   isNewArrival: z.coerce.boolean().optional(),
-  imageUrl: z.string().optional(),
+  // imageUrl: z.string().optional(),
+  imageUrls: z.array(z.string()).optional(),
 });
 
 function parseForm(form: FormData) {
@@ -41,7 +42,8 @@ function parseForm(form: FormData) {
     isFeatured: form.get("isFeatured") === "on",
     isBestseller: form.get("isBestseller") === "on",
     isNewArrival: form.get("isNewArrival") === "on",
-    imageUrl: form.get("imageUrl") || undefined,
+    // imageUrl: form.get("imageUrl") || undefined,
+    imageUrls: form.getAll("imageUrls") as string[],
   });
 }
 
@@ -93,20 +95,42 @@ export async function saveProduct(
     if (data.id) {
       await prisma.product.update({ where: { id: data.id }, data: base });
       // Replace the primary image when a new one was uploaded.
-      if (data.imageUrl) {
-        await prisma.productImage.deleteMany({ where: { productId: data.id } });
-        await prisma.productImage.create({
-          data: { productId: data.id, url: data.imageUrl, sortOrder: 0 },
-        });
-      }
+      // if (data.imageUrl) {
+      //   await prisma.productImage.deleteMany({ where: { productId: data.id } });
+      //   await prisma.productImage.create({
+      //     data: { productId: data.id, url: data.imageUrl, sortOrder: 0 },
+      //   });
+      // }
+      await prisma.productImage.deleteMany({
+  where: {
+    productId: data.id,
+  },
+});
+
+if (data.imageUrls?.length) {
+  await prisma.productImage.createMany({
+    data: data.imageUrls.map((url, index) => ({
+      productId: data.id!,
+      url,
+      sortOrder: index,
+    })),
+  });
+}
     } else {
-      const created = await prisma.product.create({ data: base });
-      if (data.imageUrl) {
-        await prisma.productImage.create({
-          data: { productId: created.id, url: data.imageUrl, sortOrder: 0 },
-        });
-      }
-    }
+  const created = await prisma.product.create({
+    data: base,
+  });
+
+  if (data.imageUrls?.length) {
+    await prisma.productImage.createMany({
+      data: data.imageUrls.map((url, index) => ({
+        productId: created.id,
+        url,
+        sortOrder: index,
+      })),
+    });
+  }
+}
 
     revalidatePath("/admin/products");
     revalidatePath("/shop");

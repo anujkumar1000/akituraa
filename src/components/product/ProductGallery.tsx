@@ -32,7 +32,7 @@ export function ProductGallery({ images, name }: { images: ProductImage[]; name:
               onClick={() => setActive(i)}
               aria-label={`View image ${i + 1}`}
               className={cn(
-                "relative aspect-square w-16 shrink-0 overflow-hidden rounded-xl ring-2 transition-all",
+                "relative aspect-square w-16 shrink-0 overflow-hidden rounded-xl ring-2 transition-all cursor-pointer",
                 i === active ? "ring-lav-500" : "ring-transparent hover:ring-lav-300"
               )}
             >
