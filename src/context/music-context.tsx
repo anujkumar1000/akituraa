@@ -4,24 +4,24 @@ import { createContext, useContext, useRef, useState } from "react";
 
 export const PLAYLIST = [
   {
-    title: "Animals",
-    artist: "Maroon 5",
-    src: "/music/change.mp3",
+    title: "Sweet",
+    artist: "LiQWYD",
+    src: "/music/sweet.mp3",
   },
   {
-    title: "Mirror ",
-    artist: "Justin Timberlake",
-    src: "/music/afterdark.mp3",
+    title: "Candy",
+    artist: "LiQWYD",
+    src: "/music/candy.mp3",
   },
   {
-    title: "On My Way",
-    artist: "Alan Walker",
-    src: "/music/sweater-weather.mp3",
+    title: "Clouds",
+    artist: "Joakim Karud",
+    src: "/music/clouds.mp3",
   },
   {
-    title: "More Than You Know",
-    artist: "Axwell & Ingrosso",
-    src: "/music/apocalypse.mp3",
+    title: "Dreams",
+    artist: "Joakim Karud",
+    src: "/music/dreams.mp3",
   },
 ];
 
